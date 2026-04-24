@@ -1,0 +1,17 @@
+# deps / build / env anywhere in the tree
+**/node_modules
+**/.next
+**/out
+.env
+.env.*
+!**/.env.example
+*.log
+.DS_Store
+tsconfig.tsbuildinfo
+.vercel
+# macOS junk / iCloud artifacts
+._*
+.AppleDouble
+.LSOverride
+# previous preview artifacts
+_syncmarker.txt
