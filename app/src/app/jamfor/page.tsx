@@ -6,7 +6,6 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 
 export const revalidate = 1800;
-export const dynamic = "force-dynamic";
 
 const TIER_COLOR = ["var(--ink-4)", "#FF4D3D", "#F4B63F", "#2F4DE3", "#2E7D6F"] as const;
 function tier(v: number | null): 0 | 1 | 2 | 3 | 4 {

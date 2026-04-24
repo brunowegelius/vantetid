@@ -7,6 +7,9 @@ import { Sparkline } from "@/components/Sparkline";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 
+
+import { REGIONS } from "@/lib/catalog";
+export async function generateStaticParams() { return REGIONS.map(r => ({ slug: r.slug })); }
 const CAT_COLOR: Record<string, string> = {
   specialist: "var(--c4)",
   operation:  "var(--c5)",
@@ -28,7 +31,6 @@ function tier(v: number | null): 0 | 1 | 2 | 3 | 4 {
 }
 
 export const revalidate = 1800;
-export const dynamicParams = true;
 
 export default async function RegionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

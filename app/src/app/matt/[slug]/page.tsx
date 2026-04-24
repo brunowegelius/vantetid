@@ -8,6 +8,9 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { formatDate, formatValueBare, performanceScore, formatPeriod, unitLabel } from "@/lib/format";
 
+
+import { METRICS } from "@/lib/catalog";
+export async function generateStaticParams() { return METRICS.map(m => ({ slug: m.slug })); }
 const CAT_COLOR: Record<string, string> = {
   specialist: "var(--c4)",
   operation:  "var(--c5)",
@@ -20,7 +23,6 @@ const CAT_COLOR: Record<string, string> = {
 };
 
 export const revalidate = 1800;
-export const dynamicParams = true;
 
 export default async function MetricPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

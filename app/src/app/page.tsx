@@ -5,7 +5,6 @@ import { AtlasClient, type RegionAgg } from "@/components/AtlasClient";
 import type { Series } from "@/lib/types";
 
 export const revalidate = 1800;
-export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   // One call per metric -> all regions. 11 parallel calls.
