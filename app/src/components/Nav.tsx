@@ -1,30 +1,58 @@
 import Link from "next/link";
 
 const links = [
-  { href: "/",            label: "Översikt" },
-  { href: "/jamfor",      label: "Jämför" },
-  { href: "/om-data",     label: "Om datan" },
-  { href: "/api-docs",    label: "API" },
-  { href: "/ladda-ner",   label: "Ladda ner" },
+  { href: "/jamfor",    label: "Jämför" },
+  { href: "/om-data",   label: "Om datan" },
+  { href: "/api-docs",  label: "API" },
+  { href: "/ladda-ner", label: "Ladda ner" },
 ];
 
 export function Nav() {
   return (
-    <header className="pt-8 pb-4">
-      <div className="grid-wide flex items-baseline justify-between gap-8">
-        <Link href="/" className="flex items-baseline gap-3 link-ink">
-          <span className="serif text-2xl leading-none">Väntetid</span>
-          <span className="text-2xs uppercase tracking-wider text-muted">öppen data om svensk vård</span>
-        </Link>
-        <nav className="flex items-baseline gap-6 text-sm">
-          {links.map(l => (
-            <Link key={l.href} href={l.href} className="link-ink text-ink/80 hover:text-muted">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-      <div className="grid-wide mt-6"><div className="rule" /></div>
-    </header>
+    <div
+      style={{
+        padding: "18px 28px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 16,
+        flexWrap: "wrap",
+      }}
+    >
+      <Link
+        href="/"
+        style={{
+          background: "var(--ink)",
+          color: "var(--bg)",
+          padding: "10px 16px",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 14,
+        }}
+      >
+        <div style={{ width: 8, height: 8, background: "var(--c1)" }} />
+        <span className="display" style={{ fontSize: 15 }}>Väntetid · Atlas</span>
+        <span className="mono" style={{ fontSize: 10.5, opacity: 0.6, letterSpacing: "0.08em" }}>
+          ÅTER TILL KARTAN ←
+        </span>
+      </Link>
+      <nav style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {links.map(l => (
+          <Link
+            key={l.href}
+            href={l.href}
+            className="caps"
+            style={{
+              padding: "10px 14px",
+              background: "var(--bg)",
+              color: "var(--ink)",
+              outline: "1px solid var(--ink)",
+            }}
+          >
+            {l.label}
+          </Link>
+        ))}
+      </nav>
+    </div>
   );
 }

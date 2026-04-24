@@ -1,16 +1,7 @@
-# deps
 node_modules
-# next
 .next
-out
-# env (never commit secrets)
 .env
-.env.*
-!.env.example
-# logs / os
+.env.local
+.vercel
 *.log
 .DS_Store
-# build cache
-tsconfig.tsbuildinfo
-# vercel (if used later)
-.vercel

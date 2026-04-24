@@ -1,31 +1,31 @@
 import Link from "next/link";
-import { formatValue, formatDate, performanceScore, scoreColor, formatPeriod } from "@/lib/format";
+import { formatValueBare, formatDate, performanceScore, formatPeriod, unitLabel } from "@/lib/format";
 import type { Series } from "@/lib/types";
 
 export function MetricTile({ series, href }: { series: Series; href?: string }) {
   const v = series.latest?.value ?? null;
   const score = performanceScore(v, series.metric);
-  const color = scoreColor(score);
   const body = (
-    <article className="py-8">
-      <div className="text-2xs uppercase tracking-wider text-subtle">{series.metric.short_name_sv}</div>
-      <div className="mt-3 flex items-baseline gap-3">
-        <div className="serif num text-6xl leading-none" style={{ color }}>
-          {formatValue(v, series.metric.unit).split(" ")[0]}
-        </div>
-        <div className="text-sm text-muted">{formatValue(v, series.metric.unit).split(" ").slice(1).join(" ") || series.metric.unit}</div>
+    <div className="station" style={{ padding: 24 }}>
+      <div className="caps" style={{ color: "var(--ink-3)" }}>{series.metric.short_name_sv}</div>
+      <div className="display-black" style={{ fontSize: 64, lineHeight: 0.9, marginTop: 12, letterSpacing: "-0.04em" }}>
+        {formatValueBare(v, series.metric.unit)}
       </div>
-      <div className="mt-4 text-sm text-muted max-w-md">
+      <div className="mono" style={{ fontSize: 11, color: "var(--ink-3)", marginTop: 6 }}>
+        {unitLabel(series.metric.unit)}
+      </div>
+      <p style={{ fontSize: 13, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.5, maxWidth: "48ch" }}>
         {series.metric.description_sv}
-      </div>
+      </p>
       {series.latest && (
-        <div className="mt-4 text-2xs uppercase tracking-wider text-subtle flex gap-4">
+        <div className="mono" style={{ fontSize: 10.5, color: "var(--ink-3)", marginTop: 14, display: "flex", gap: 14, letterSpacing: "0.05em" }}>
           <span>{formatPeriod(series.latest.period, /^\d{6}$/.test(series.latest.period) ? "month" : "year")}</span>
           <span>hämtad {formatDate(series.latest.fetched_at)}</span>
-          <a className="link-ink" href={series.latest.source_url} target="_blank" rel="noreferrer">källa</a>
+          <a href={series.latest.source_url} target="_blank" rel="noreferrer" className="link-ink" style={{ color: "var(--ink)" }}>källa →</a>
+          {score != null && <span style={{ marginLeft: "auto" }}>rank {Math.round(score * 100)}</span>}
         </div>
       )}
-    </article>
+    </div>
   );
   return href ? <Link href={href} className="block link-ink">{body}</Link> : body;
 }

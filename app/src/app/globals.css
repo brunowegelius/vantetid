@@ -3,45 +3,50 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Instrument Serif", "Source Serif 4", ui-serif, Georgia, serif;
+  --bg:     #F5F3EC;
+  --bg-2:   #ECE9DF;
+  --ink:    #0F0F13;
+  --ink-2:  #3A3A42;
+  --ink-3:  #74747E;
+  --ink-4:  #B4B4BC;
+  --c1:     #FF4D3D;
+  --c2:     #F4B63F;
+  --c3:     #2E7D6F;
+  --c4:     #2F4DE3;
+  --c5:     #8B5FBF;
+  --c6:     #E66FAE;
+  --c7:     #5B6B80;
   color-scheme: light;
 }
 
+* { box-sizing: border-box; }
+
 html, body {
-  background: #F7F5F0;
-  color: #0E0E0C;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'General Sans', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-feature-settings: "ss01","cv11","tnum";
   text-rendering: optimizeLegibility;
 }
 
-body {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.55;
+body { font-size: 15px; line-height: 1.55; }
+
+.display       { font-family: 'Cabinet Grotesk', 'General Sans', sans-serif; font-weight: 800; letter-spacing: -0.035em; }
+.display-black { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 900; letter-spacing: -0.04em; }
+.mono          { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+.caps          { text-transform: uppercase; letter-spacing: 0.14em; font-size: 10.5px; font-weight: 500; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+a { color: inherit; text-decoration: none; }
+button { background: none; border: none; color: inherit; font: inherit; cursor: pointer; padding: 0; font-family: inherit; }
+::selection { background: var(--c2); color: var(--ink); }
+
+.hairline { background: var(--ink-4); height: 1px; width: 100%; opacity: 0.6; }
+.rule-ink { background: var(--ink); height: 1px; width: 100%; }
+
+.station {
+  background: var(--bg);
+  outline: 1px solid var(--ink);
 }
 
-/* Swiss-grid helpers */
-.grid-wide { width: 100%; max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
-@media (min-width: 768px)  { .grid-wide { padding-left: 48px; padding-right: 48px; } }
-@media (min-width: 1280px) { .grid-wide { padding-left: 72px; padding-right: 72px; } }
-
-.serif { font-family: var(--font-display); font-feature-settings: "liga","dlig"; }
-
-/* Hairline = single background color change instead of a visible border. */
-.rule { background: #E4E0D6; height: 1px; width: 100%; }
-
-/* Tabular numerals everywhere numbers show up */
-.num  { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
-
-/* Link treatment: no underlines, subtle hover color shift only */
-a { color: inherit; text-decoration: none; }
-a.link-ink:hover { color: #6B6A64; }
-
-/* utility: long-form body */
-.prose-clean p { margin: 0 0 1rem 0; max-width: 64ch; }
-.prose-clean h2 { margin: 2.5rem 0 0.75rem 0; font-size: 1.25rem; font-weight: 500; }
-.prose-clean h3 { margin: 1.75rem 0 0.5rem 0; font-size: 1rem;    font-weight: 500; }
-.prose-clean ul { margin: 0 0 1rem 0; padding-left: 1rem; }
-.prose-clean li { margin: 0.25rem 0; }
+.link-ink { transition: color 120ms ease; }
+.link-ink:hover { color: var(--ink-3); }

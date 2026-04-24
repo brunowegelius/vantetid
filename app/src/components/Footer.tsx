@@ -1,53 +1,42 @@
-import Link from "next/link";
 import { SOURCES } from "@/lib/catalog";
 
 export function Footer() {
   return (
-    <footer className="mt-32 pb-16">
-      <div className="grid-wide">
-        <div className="rule mb-8" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
+    <footer style={{ padding: "40px 28px 60px" }}>
+      <div className="station" style={{ padding: 28 }}>
+        <div className="display-black" style={{ fontSize: 22, marginBottom: 18 }}>Kolofon</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 22 }}>
           <div>
-            <div className="serif text-xl leading-none">Väntetid</div>
-            <p className="text-muted mt-3 max-w-xs">
-              Öppen, verifierbar översikt över väntetider i svensk vård. Automatiskt uppdaterad.
-              Varje datapunkt spårbar till sin källa.
-            </p>
-          </div>
-          <div>
-            <div className="text-2xs uppercase tracking-wider text-subtle mb-3">Sajten</div>
-            <ul className="space-y-1.5">
-              <li><Link className="link-ink" href="/">Översikt</Link></li>
-              <li><Link className="link-ink" href="/jamfor">Jämför regioner</Link></li>
-              <li><Link className="link-ink" href="/om-data">Metodologi</Link></li>
-              <li><Link className="link-ink" href="/api-docs">Publikt API</Link></li>
-              <li><Link className="link-ink" href="/ladda-ner">Ladda ner data</Link></li>
-            </ul>
-          </div>
-          <div>
-            <div className="text-2xs uppercase tracking-wider text-subtle mb-3">Källor</div>
-            <ul className="space-y-1.5">
-              {SOURCES.map(s => (
-                <li key={s.slug}>
-                  <a className="link-ink" href={s.homepage_url} target="_blank" rel="noreferrer">
+            <div className="caps" style={{ color: "var(--ink-3)", marginBottom: 4 }}>Källor</div>
+            <div style={{ fontSize: 13, lineHeight: 1.5, color: "var(--ink-2)" }}>
+              {SOURCES.map((s, i) => (
+                <span key={s.slug}>
+                  <a className="link-ink" href={s.homepage_url} target="_blank" rel="noreferrer" style={{ color: "var(--ink)" }}>
                     {s.name}
                   </a>
-                </li>
+                  {i < SOURCES.length - 1 ? " · " : ""}
+                </span>
               ))}
-            </ul>
+            </div>
           </div>
           <div>
-            <div className="text-2xs uppercase tracking-wider text-subtle mb-3">Licens</div>
-            <p className="text-muted">
-              All egen data publiceras under <span className="text-ink">CC BY 4.0</span>. Vidareanvändning
-              ska ange ursprungskällorna enligt attributionstext per mätetal.
-            </p>
+            <div className="caps" style={{ color: "var(--ink-3)", marginBottom: 4 }}>Typsnitt</div>
+            <div style={{ fontSize: 13, lineHeight: 1.5, color: "var(--ink-2)" }}>
+              Cabinet Grotesk · General Sans · JetBrains Mono
+            </div>
           </div>
-        </div>
-        <div className="rule mt-10 mb-6" />
-        <div className="text-2xs uppercase tracking-wider text-subtle flex justify-between">
-          <span>© {new Date().getFullYear()} Väntetid</span>
-          <span>byggd med öppna källor</span>
+          <div>
+            <div className="caps" style={{ color: "var(--ink-3)", marginBottom: 4 }}>Licens</div>
+            <div style={{ fontSize: 13, lineHeight: 1.5, color: "var(--ink-2)" }}>
+              Egen data CC BY 4.0. Ursprungskällor anges per mätetal.
+            </div>
+          </div>
+          <div>
+            <div className="caps" style={{ color: "var(--ink-3)", marginBottom: 4 }}>© {new Date().getFullYear()}</div>
+            <div style={{ fontSize: 13, lineHeight: 1.5, color: "var(--ink-2)" }}>
+              Väntetid · öppen översikt över svensk vård
+            </div>
+          </div>
         </div>
       </div>
     </footer>

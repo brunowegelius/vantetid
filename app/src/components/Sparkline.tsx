@@ -1,13 +1,13 @@
 export function Sparkline({
-  points, betterDirection, target, width = 320, height = 72,
+  points, betterDirection, target, width = 320, height = 72, color = "var(--ink)",
 }: {
   points: { period: string; value: number | null }[];
   betterDirection: "lower" | "higher";
   target?: number | null;
-  width?: number; height?: number;
+  width?: number; height?: number; color?: string;
 }) {
   const clean = points.filter(p => p.value != null) as { period: string; value: number }[];
-  if (clean.length < 2) return <div className="text-2xs uppercase tracking-wider text-subtle">Otillräcklig historik</div>;
+  if (clean.length < 2) return <div className="caps" style={{ color: "var(--ink-4)" }}>otillräcklig historik</div>;
   const vals = clean.map(p => p.value);
   const min = Math.min(...vals, target ?? Infinity);
   const max = Math.max(...vals, target ?? -Infinity);
@@ -23,12 +23,12 @@ export function Sparkline({
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label="historik">
       {target != null && (
         <line x1={pad} x2={width - pad} y1={y(target)} y2={y(target)}
-              stroke="#9C9A91" strokeDasharray="2 3" strokeWidth={1} />
+              stroke="var(--ink-4)" strokeDasharray="2 3" strokeWidth={1} />
       )}
-      <path d={d} fill="none" stroke="#0E0E0C" strokeWidth={1.5} />
+      <path d={d} fill="none" stroke={color} strokeWidth={1.75} />
       {clean.map((p, i) => (
         <circle key={i} cx={x(i)} cy={y(p.value)} r={i === clean.length - 1 ? 3 : 1.5}
-                fill={i === clean.length - 1 ? "#0E0E0C" : "#6B6A64"} />
+                fill={i === clean.length - 1 ? color : "var(--ink-3)"} />
       ))}
     </svg>
   );
