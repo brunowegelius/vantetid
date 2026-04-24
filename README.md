@@ -2,69 +2,48 @@
 
 En öppen, verifierbar översikt över väntetider i svensk vård. Automatiskt uppdaterad. Varje siffra spårbar till sin källa.
 
-## Innehåll
+Live: https://brunowegelius.github.io/vantetid/ (efter första deploy)
+
+## Arkitektur
 
     Väntetid/
-    ├── app/                          Next.js 15 frontend
-    │   └── src/
-    │       ├── app/                  App Router pages
-    │       ├── components/           UI (Swiss/minimalist, inga borders/skuggor/emojis)
-    │       └── lib/                  Data-lager (Supabase + Kolada-fallback)
+    ├── app/                       Next.js 15 static export (deploy: GitHub Pages)
+    │   ├── src/app/               Sidor (/, /region/[slug], /matt/[slug], /jamfor, /om-data, /api-docs, /ladda-ner)
+    │   ├── src/components/        Swiss/minimalist UI — inga skuggor, inga borders, inga emojis
+    │   └── src/lib/               Data-lager (Supabase PostgREST + Kolada-fallback)
     ├── supabase/
-    │   ├── migrations/
-    │   │   ├── 0001_schema_init.sql  schema `vantetid` + RLS
-    │   │   ├── 0002_seed.sql         22 regioner, 5 källor, 11 mätetal
-    │   │   └── 0003_cron.sql         pg_cron-schemaläggning
-    │   └── functions/
-    │       └── etl-kolada/index.ts   Edge Function: hämta + validera + spara
-    └── docs/
-        └── ARCHITECTURE.md           detaljerad arkitektur och pålitlighetsmekanismer
+    │   ├── migrations/            Schema, seed, pg_cron, finalize-funktion
+    │   └── functions/etl-kolada/  Edge Function: hämta, hasha, bulk-insertera, validera
+    ├── docs/ARCHITECTURE.md       Detaljerad arkitektur och pålitlighetsmekanismer
+    └── .github/workflows/         Daily build + deploy till GitHub Pages
 
-## Snabbstart (lokalt)
+## Säkerhet (vad som INTE är i repot)
+
+- `.env`, `.env.local` — inga hemligheter. Anon key sätts via GitHub Secrets.
+- Service role key finns ENDAST som Supabase-secret (auto-provisioned till Edge Functions), aldrig i Next.js-bundlen.
+- RLS på allt. Anon-rollen får bara SELECT på publika tabeller. `raw_snapshots` är inte publikt läsbar.
+- `node_modules`, `.next`, `out`, `.vercel`, `tsconfig.tsbuildinfo`, `.DS_Store` exkluderade i `.gitignore`.
+
+## Deploy — första gången
+
+1. Lägg till GitHub Secrets på `Settings → Secrets and variables → Actions`:
+
+        NEXT_PUBLIC_SUPABASE_URL        = https://veugxzdxvfksnsztefnx.supabase.co
+        NEXT_PUBLIC_SUPABASE_ANON_KEY   = sb_publishable_4k2NfY8ZXVJ9dgjQl_dziw_m-XnFZpw
+
+2. Slå på GitHub Pages: `Settings → Pages → Source: GitHub Actions`.
+3. Kör workflow manuellt: `Actions → Bygg och deploya till GitHub Pages → Run workflow`.
+4. Efter ca 2 minuter finns sajten på `https://brunowegelius.github.io/vantetid/`.
+
+Workflown körs automatiskt varje natt kl 04:00 UTC (35 min efter Supabase-ETL kl 02:25). Varje push till `main` triggar också en ny deploy.
+
+## Köra lokalt
 
     cd app
     npm install
-    npm run dev          # sajten kör mot Kolada direkt om .env saknas
+    npm run dev
 
-Öppna http://localhost:3000. Sajten hämtar live-data från Kolada v3 direkt i server-komponenterna med 30 min ISR.
-
-## Koppla till Supabase (live-deploy)
-
-1. Skapa nytt Supabase-projekt. Skicka connection URL + anon key.
-2. Kör migrations:
-
-        supabase link --project-ref <REF>
-        supabase db push
-
-3. Sätt miljövariabler i Vercel:
-
-        NEXT_PUBLIC_SUPABASE_URL=https://<REF>.supabase.co
-        NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-
-4. Deploya Edge Function:
-
-        supabase functions deploy etl-kolada --no-verify-jwt
-
-5. Sätt service role key som secret:
-
-        supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<service_role_key>
-
-6. Kör första ETL-passet manuellt:
-
-        curl -X POST https://<REF>.supabase.co/functions/v1/etl-kolada \
-          -H "authorization: Bearer <service_role_key>"
-
-7. Aktivera pg_cron + pg_net i Supabase dashboard, redigera `0003_cron.sql`, kör den.
-
-8. Deploya Next.js-appen till Vercel.
-
-## Designprinciper
-
-- Ingen siffra utan källa. Varje datapunkt har `source_url`, `fetched_at`, `run_id` och SHA-256-hash.
-- Append-only. `measurements` skrivs aldrig över.
-- Validering före publicering. Avvikelser >30 % hålls tillbaka för granskning.
-- Radikal transparens. Allt som visas är tillgängligt som JSON/CSV.
-- Inget vibe-UI. Swiss-typografi. Inga skuggor, inga borders, inga emojis.
+Öppna http://localhost:3000. Kör utan env-vars pratar den direkt med Kolada v3. Lägg till `.env.local` med Supabase-varna ovan för att köra mot den persisterade datan.
 
 ## Datakällor
 
@@ -72,7 +51,16 @@ En öppen, verifierbar översikt över väntetider i svensk vård. Automatiskt u
 |---|---|---|
 | Kolada v3 (RKA) | CC BY 4.0 | Primär, fungerar idag |
 | Socialstyrelsen PxWeb | Öppna data | Aktiveras när väntetidstabellerna publiceras (vår 2026) |
-| Sveriges dataportal | CC0 (metadata) | Används för upptäckt av nya dataset |
-| RCC SVF | Fri användning med attribution | Manuell kvartalsuppladdning |
+| SKR Väntetider i vården | Fri användning | Parallell rapportering under 2026 |
+| Sveriges dataportal | CC0 (metadata) | Upptäckt av nya dataset |
+| RCC SVF | Fri användning | Manuell kvartalsuppladdning |
 
-Se `docs/ARCHITECTURE.md` för fullständig arkitektur och dataflöde.
+## Designprinciper
+
+- Ingen siffra utan källa. Varje datapunkt har `source_url`, `fetched_at`, `run_id` och SHA-256-hash.
+- Append-only. `measurements` skrivs aldrig över.
+- Validering före publicering. Avvikelser >30 % blockeras tills granskning.
+- Radikal transparens. Allt som visas är tillgängligt som JSON/CSV via PostgREST.
+- Inget vibe-UI. Swiss-typografi. Inga skuggor, inga borders, inga emojis.
+
+Se `docs/ARCHITECTURE.md` för fullständig arkitektur och pålitlighetsmekanismer.
